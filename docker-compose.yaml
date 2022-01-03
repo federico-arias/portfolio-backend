@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+
+  postgres:
+    image: postgres:9-alpine
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_DB: pgdatabase
+    ports:
+      - 1314:5432
+    healthcheck:
+      test: "pg_isready -U postgres"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - backend/migrations:/docker-entrypoint-initdb.d/
+    ports:
+      - 5433:5432

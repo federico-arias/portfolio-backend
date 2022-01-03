@@ -1,0 +1,6 @@
+[submodule "landing-proxy"]
+	path = landing-proxy
+	url = git@gitlab.com:komet.social/landing-proxy.git
+[submodule "front-end"]
+	path = front-end
+	url = git@gitlab.com:komet.social/front-end.git
