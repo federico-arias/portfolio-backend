@@ -1,19 +1,15 @@
-import express from "express"
 import { getConfig } from "./config"
-import { getDatabaseConnection } from "./postgres"
+import { Db } from "./db"
+import { ReservationRepository, ReservationApplication } from "./reservation"
+import { Server } from "./http/Server"
 
-const config = getConfig(process.env)
-const { port, path, pgConnString} = config
+const config = getConfig(process.env) // new Config(process.env) ; config.get('path')
+const { port, path, pgConnString } = config
 
-const db = getDatabaseConnection(pgConnString)
+const db = new Db(pgConnString)
 
-const app = express();
-const router = express.Router();
+const r = new ReservationRepository(db)
+const reservation = new ReservationApplication(r)
 
-app.use(path, router)
-
-
-app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}`)
-});
-
+const server = new Server(path, port)
+server.addRoutes(reservation.getHttpHandlers())

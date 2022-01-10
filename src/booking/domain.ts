@@ -1,6 +1,0 @@
-class Booking {
-  constructor() {
-  }
-  isPastDate() {
-  }
-}

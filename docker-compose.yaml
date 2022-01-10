@@ -2,7 +2,7 @@ version: '2'
 
 services:
 
-  postgres:
+  pg:
     image: postgres:9-alpine
     environment:
       POSTGRES_USER: pguser
@@ -16,6 +16,4 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - backend/migrations:/docker-entrypoint-initdb.d/
-    ports:
-      - 5433:5432
+      - ./migrations:/docker-entrypoint-initdb.d/

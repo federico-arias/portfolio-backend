@@ -1,5 +1,5 @@
 {
-	"name": "komet-api",
+	"name": "generic-api",
 	"description": "main api",
 	"scripts": {
 		"test": "jest",
@@ -7,14 +7,13 @@
 		"start:watch": "nodemon -r dotenv/config src/index.ts",
 		"build": "tsc",
 		"build:watch": "tsc -w",
-    "dockerize": "docker build .",
-    "logs": "docker-compose -f .standalone/docker-compose.yaml logs -f backend"
+		"dockerize": "docker build .",
+		"pg": "docker-compose up -d --force-recreate --renew-anon-volumes pg && docker-compose logs pg",
+		"pg:debug": "docker-compose exec pg psql -U pguser -W pgdatabase"
 	},
 	"license": "ISC",
 	"dependencies": {
-		"body-parser": "^1.19.0",
-		"casbin": "^5.11.5",
-		"casbin-basic-adapter": "^0.1.0",
+		"body-parser": "^1.19.1",
 		"cors": "^2.8.4",
 		"dotenv": "^4.0.0",
 		"express": "^4.15.4",
@@ -28,6 +27,7 @@
 		"@types/pg": "^8.6.1",
 		"jest": "^27.0.6",
 		"nodemon": "^2.0.7",
+		"prettier": "^2.5.1",
 		"ts-node": "^10.1.0",
 		"typescript": "^4.3.5"
 	}
