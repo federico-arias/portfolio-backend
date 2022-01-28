@@ -1,3 +1,4 @@
 export interface Order {
-	order_number: string
+	order_id: string
+	email: string
 }

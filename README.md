@@ -3,11 +3,16 @@
 To start the service, run:
 
 ```
-docker-compose up -d
 yarn && yarn start:watch
 ```
 
-# Documentation
+# API Documentation
 
-The Swagger Documentation can be found in
-[http://localhost:${PORT}/docs](http://localhost:1313/docs).
+The Swagger Documentation can be found in [http://localhost:${PORT}/docs][localhost].
+
+# Code
+
+This service follows a [Domain Driven Design (DDD)][ddd] approach.
+
+[ddd]: http://uniknow.github.io/AgileDev/site/0.1.8-SNAPSHOT/parent/ddd/core/layered_architecture.html
+[localhost]: http://localhost:1313/docs

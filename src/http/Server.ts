@@ -1,51 +1,44 @@
 import express, {
 	NextFunction,
 	Router,
-	RequestHandler,
 	Response,
 	Request,
+	Express,
 } from "express"
 import bodyParser from "body-parser"
 import { RegisterRoutes } from "../../build/routes"
 import { ValidateError } from "tsoa"
+import { HttpError } from "./errors"
 
 import swaggerUi from "swagger-ui-express"
-
-interface Route {
-	path: string
-	handler: RequestHandler
-}
 
 export class Server {
 	router: Router
 	logger: typeof console
+	server: Express
+	port: string
 
 	constructor(path: string, port: string, logger: typeof console = console) {
 		this.logger = logger
-		const server = express()
+		this.port = port
+		this.server = express()
 		this.router = express.Router()
-		server.use(bodyParser.json())
-		server.use(path, this.router)
+		this.server.use(bodyParser.json())
+		this.server.use(path, this.router)
 
 		// Register tsoa controllers
-		RegisterRoutes(server)
+		RegisterRoutes(this.server)
 		// Health endpoint for AWS LB, Kubernetes, Docker Compose, etc.
 		this.router.get("/healthz", (_: Request, res: Response) => {
 			res.status(200).send("OK")
 		})
 
-		server.use("/docs", swaggerUi.serve, this.getDocumentation)
-		server.use(this.handleErrors)
-		server.listen(port, this.onServerStart)
+		this.server.use("/docs", swaggerUi.serve, this.getDocumentation)
+		this.server.use(this.handleErrors)
 	}
 
-	//addRoute(fn: () => [string, RequestHandler]) {
-	addRoutes = (routes: Route[]) => {
-		routes.forEach(this.addRoute.bind(this))
-	}
-
-	addRoute = ({ path, handler }: Route) => {
-		this.router.post(path, handler)
+	start() {
+		this.server.listen(this.port, this.onServerStart)
 	}
 
 	getDocumentation = async (_req: Request, res: Response) => {
@@ -68,6 +61,14 @@ export class Server {
 			return res.status(422).json({
 				message: "Validation Failed",
 				details: err?.fields,
+			})
+		}
+		if (err instanceof HttpError) {
+			this.logger.error(`caught an error when processing ${req}`)
+			this.logger.error(err)
+			return res.status(err.status).json({
+				message: err.detail,
+				title: err.title,
 			})
 		}
 		if (err instanceof Error) {
