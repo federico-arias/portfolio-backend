@@ -5,6 +5,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "outDir": "./build",
+    "resolveJsonModule": true,
     "rootDir": "./src",
     "removeComments": true,
     "inlineSourceMap": true,
@@ -23,6 +24,6 @@
       "*": ["src/@types/*"]
     }
   },
-  "include": ["src/index.ts"],
+  "include": ["src/index.ts", "src/reservation/presentation.ts"],
   "exclude": ["node_modules", "**/*.test.ts", "src/@types"]
 }
