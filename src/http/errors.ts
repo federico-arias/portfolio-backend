@@ -31,7 +31,7 @@ export abstract class HttpError extends Error {
 	readonly title: string = "Internal Server Error"
 
 	constructor(message: string, err?: Error) {
-		super(`${message} ${err?.message}`)
+		super(`${message} ${err ? err.message : ""}`)
 		if (err) this.stack = err?.stack
 		this.detail = message
 	}

@@ -1,6 +1,6 @@
 {
   "restartable": "rs",
-  "ignore": [".git", "node_modules/", "lib/", "coverage/"],
+  "ignore": [".git", "node_modules/", "lib/", "coverage/", "src/http/swagger.json", "src/http/api"],
   "watch": ["src/"],
   "execMap": {
     "ts": "node -r ts-node/register"

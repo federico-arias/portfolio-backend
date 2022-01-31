@@ -1,0 +1,181 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"Tracking": {
+				"properties": {
+					"orderNo": {
+						"type": "string"
+					},
+					"tracking_number": {
+						"type": "number",
+						"format": "double"
+					},
+					"courier": {
+						"type": "string"
+					},
+					"street": {
+						"type": "string"
+					},
+					"zip_code": {
+						"type": "string"
+					},
+					"city": {
+						"type": "string"
+					},
+					"destination_country_iso3": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"articleNo": {
+						"type": "string"
+					},
+					"articleImageUrl": {
+						"type": "string"
+					},
+					"quantity": {
+						"type": "string"
+					},
+					"product_name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"orderNo",
+					"tracking_number",
+					"courier",
+					"street",
+					"zip_code",
+					"city",
+					"destination_country_iso3",
+					"email",
+					"articleNo",
+					"articleImageUrl",
+					"quantity",
+					"product_name"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"TrackingCheckpoint": {
+				"properties": {
+					"tracking_number": {
+						"type": "number",
+						"format": "double"
+					},
+					"location": {
+						"type": "string"
+					},
+					"timestamp": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					},
+					"status_text": {
+						"type": "string"
+					},
+					"status_detail": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"tracking_number",
+					"location",
+					"timestamp",
+					"status",
+					"status_text",
+					"status_detail"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "generic-api",
+		"description": "main api",
+		"license": {
+			"name": "ISC"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/trackings": {
+			"get": {
+				"operationId": "GetTrackings",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Tracking"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "email",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/trackings/{trackingNumber}/checkpoints": {
+			"get": {
+				"operationId": "GetTrackingCheckpoints",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/TrackingCheckpoint"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "trackingNumber",
+						"required": true,
+						"schema": {
+							"format": "double",
+							"type": "number"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

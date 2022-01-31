@@ -1,49 +1,47 @@
-import express, {
-	NextFunction,
-	Router,
-	Response,
-	Request,
-	Express,
-} from "express"
+import express, { NextFunction, Router, Response, Request } from "express"
 import bodyParser from "body-parser"
-import { RegisterRoutes } from "../../build/routes"
+import { RegisterRoutes } from "./api/routes" // eslint-disable-line no-eval
 import { ValidateError } from "tsoa"
 import { HttpError } from "./errors"
+//import { TYPES } from "../ioc/types"
 
 import swaggerUi from "swagger-ui-express"
+
+export interface ServerOptions {
+	path: string
+	port: string
+}
 
 export class Server {
 	router: Router
 	logger: typeof console
-	server: Express
-	port: string
 
-	constructor(path: string, port: string, logger: typeof console = console) {
+	constructor(
+		private _opts: ServerOptions,
+		logger: typeof console = console,
+	) {
 		this.logger = logger
-		this.port = port
-		this.server = express()
+		const server = express()
 		this.router = express.Router()
-		this.server.use(bodyParser.json())
-		this.server.use(path, this.router)
+		server.use(bodyParser.json())
+		server.use(this._opts.path, this.router)
 
-		// Register tsoa controllers
-		RegisterRoutes(this.server)
 		// Health endpoint for AWS LB, Kubernetes, Docker Compose, etc.
 		this.router.get("/healthz", (_: Request, res: Response) => {
 			res.status(200).send("OK")
 		})
 
-		this.server.use("/docs", swaggerUi.serve, this.getDocumentation)
-		this.server.use(this.handleErrors)
-	}
+		// Register tsoa controllers
+		RegisterRoutes(server.bind(server))
 
-	start() {
-		this.server.listen(this.port, this.onServerStart)
+		server.use("/docs", swaggerUi.serve, this.getDocumentation)
+		server.use(this.handleErrors)
+		server.listen(this._opts.port, this.onServerStart)
 	}
 
 	getDocumentation = async (_req: Request, res: Response) => {
 		return res.send(
-			swaggerUi.generateHTML(await import("../../build/swagger.json")),
+			swaggerUi.generateHTML(await import("./swagger.json")), // eslint-disable-line no-eval
 		)
 	}
 
@@ -64,7 +62,7 @@ export class Server {
 			})
 		}
 		if (err instanceof HttpError) {
-			this.logger.error(`caught an error when processing ${req}`)
+			this.logger.error(`caught an error when processing ${req.url}`)
 			this.logger.error(err)
 			return res.status(err.status).json({
 				message: err.detail,
@@ -72,6 +70,8 @@ export class Server {
 			})
 		}
 		if (err instanceof Error) {
+			this.logger.error(`caught an error when processing ${req.url}`)
+			this.logger.error(err)
 			return res.status(500).json({
 				message: "Internal Server Error",
 			})
@@ -80,6 +80,6 @@ export class Server {
 	}
 
 	onServerStart = () => {
-		this.logger.log(`server started`)
+		this.logger.info(`server started`)
 	}
 }

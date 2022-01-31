@@ -3,10 +3,11 @@
   "noImplicitAdditionalProperties": "throw-on-extras",
   "controllerPathGlobs": ["src/tracking/presentation.ts"],
   "spec": {
-    "outputDirectory": "build",
+    "outputDirectory": "src/http",
     "specVersion": 3
   },
   "routes": {
-    "routesDir": "build"
+    "routesDir": "src/http/api",
+    "iocModule": "src/inversify.config"
   }
 }

@@ -1,25 +1,22 @@
 import Joi from "joi"
+import { injectable } from "inversify"
+import "reflect-metadata"
 
 const envSchema = Joi.object({
-	POSTGRES_DSN: Joi.string().required(),
 	PORT: Joi.string().required(),
 	ROUTER_PATH: Joi.string().required(),
 }).unknown()
 
-interface AppConfig {
-	pgConnString: string
+@injectable()
+export class Config {
 	port: string
 	path: string
-}
-
-export const getConfig = (env: typeof process.env): AppConfig => {
-	const { error, value: v } = envSchema.validate(env)
-	if (error) {
-		throw error
-	}
-	return {
-		pgConnString: v.POSTGRES_DSN,
-		port: v.PORT,
-		path: v.ROUTER_PATH,
+	constructor(env: typeof process.env = process.env) {
+		const { error, value: v } = envSchema.validate(env)
+		if (error) {
+			throw error
+		}
+		this.port = v.PORT
+		this.path = v.ROUTER_PATH
 	}
 }

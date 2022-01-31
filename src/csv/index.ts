@@ -1,26 +1,34 @@
 import { parse, Options } from "csv-parse"
+import * as fs from "fs"
 import { promisify } from "util"
-
-export interface Entity {}
+import { join } from "path"
+import { injectable } from "inversify"
 
 const parseCsv = <T>() => promisify<Buffer | string, Options, T>(parse)
 
 /**
- * Repository layer that queries the in-memory CSV.
+ * Repository layer that stores CSV in memory and queries against it.
  */
-export class Repository<T extends Entity> {
-	//<T extends Entity> {
+@injectable()
+export abstract class Repository<T = any> {
 	records: Promise<T[]>
 
-	constructor(csvString: string) {
-		this.records = parseCsv<T[]>()(csvString, {
+	constructor(filename: string) {
+		const csvString = fs.readFileSync(join(__dirname, filename), {
+			encoding: "utf8",
+			flag: "r",
+		})
+		this.records = parseCsv<T[]>()(csvString.trim(), {
+			delimiter: ";",
+			relax_column_count: true,
 			columns: true,
 			skip_empty_lines: true,
 		})
 	}
 
-	async findAll(column: string, value: string) {
+	async findAll(column: keyof T, value: any) {
 		const records = await this.records
-		return records.filter((r: any) => r[column] === value)
+		console.log(records)
+		return records.filter((r: T) => r[column] === value)
 	}
 }
