@@ -2,3 +2,4 @@ node_modules
 iaas/.terraform
 aws-terraform/.terraform
 build/
+yarn-error.log
