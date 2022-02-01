@@ -2,7 +2,7 @@
 	"name": "generic-api",
 	"description": "main api",
 	"scripts": {
-		"test": "jest",
+		"test": "jest --watch",
 		"start:prod": "node build/index.js",
 		"start": "concurrently \"nodemon -r dotenv/config src/index.ts\" \"nodemon -x tsoa spec-and-routes\"",
 		"prebuild": "tsoa spec-and-routes",
@@ -33,6 +33,7 @@
 		"@types/joi": "^17.2.3",
 		"@types/node": "^16.4.1",
 		"@types/pg": "^8.6.1",
+		"@types/ramda": "^0.27.64",
 		"@types/swagger-ui-express": "^4.1.3",
 		"concurrently": "^7.0.0",
 		"inversify": "^6.0.1",
