@@ -2,7 +2,7 @@
 	"name": "generic-api",
 	"description": "main api",
 	"scripts": {
-		"test": "jest --watch",
+		"test": "jest",
 		"start:prod": "node build/index.js",
 		"start": "concurrently \"nodemon -r dotenv/config src/index.ts\" \"nodemon -x tsoa spec-and-routes\"",
 		"prebuild": "tsoa spec-and-routes",
