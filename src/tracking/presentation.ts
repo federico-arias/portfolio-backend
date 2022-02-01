@@ -4,12 +4,13 @@ import "reflect-metadata"
 import { Controller, Get, Query, Route, Path } from "tsoa"
 import { Tracking, TrackingCheckpoint } from "./domain"
 import { NotFoundError } from "../http/errors"
+import { getOrder } from "./getOrder"
 
 export interface IRepository<T> {
-	findAll: (colName: keyof T, colValue: any) => Promise<T[]>
+	findAll: (colName?: keyof T, colValue?: any) => Promise<T[]>
 }
 
-@Route("trackings")
+@Route("orders")
 @provideSingleton(Presentation)
 export class Presentation extends Controller {
 	@inject("Repository<Tracking>")
@@ -19,18 +20,25 @@ export class Presentation extends Controller {
 	private _checkpoint!: IRepository<TrackingCheckpoint>
 
 	@Get()
-	public async getTrackings(@Query() email: string): Promise<Tracking[]> {
-		const result = await this._tracking.findAll("email", email)
-		if (result.length === 0)
+	public async getOrders(@Query() email: string): Promise<Tracking[]> {
+		const tracking = await this._tracking.findAll("email", email)
+		if (tracking.length === 0)
 			throw new NotFoundError(`no records for ${email}`)
-		return result
+		const checkpoint = await this._checkpoint.findAll()
+		return getOrder(tracking, checkpoint)
 	}
 
-	@Get("{trackingNumber}/checkpoints")
-	public async getTrackingCheckpoints(@Path() trackingNumber: number) {
-		return this._checkpoint.findAll(
-			"tracking_number",
-			String(trackingNumber),
-		)
+	@Get("{orderNo}")
+	public async getOrder(@Path() orderNo: string): Promise<Tracking[]> {
+		const tracking = await this._tracking.findAll("orderNo", orderNo)
+		if (tracking.length === 0)
+			throw new NotFoundError(`no records for ${orderNo}`)
+		const checkpoint = await this._checkpoint.findAll()
+		return getOrder(tracking, checkpoint)
+	}
+
+	@Get("{orderNo}/articles")
+	public async getTracking(@Path() orderNo: string) {
+		return this._tracking.findAll("orderNo", orderNo)
 	}
 }

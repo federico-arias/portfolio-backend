@@ -62,39 +62,6 @@
 				],
 				"type": "object",
 				"additionalProperties": false
-			},
-			"TrackingCheckpoint": {
-				"properties": {
-					"tracking_number": {
-						"type": "number",
-						"format": "double"
-					},
-					"location": {
-						"type": "string"
-					},
-					"timestamp": {
-						"type": "string"
-					},
-					"status": {
-						"type": "string"
-					},
-					"status_text": {
-						"type": "string"
-					},
-					"status_detail": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"tracking_number",
-					"location",
-					"timestamp",
-					"status",
-					"status_text",
-					"status_detail"
-				],
-				"type": "object",
-				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -109,9 +76,9 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/trackings": {
+		"/orders": {
 			"get": {
-				"operationId": "GetTrackings",
+				"operationId": "GetOrders",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -140,9 +107,9 @@
 				]
 			}
 		},
-		"/trackings/{trackingNumber}/checkpoints": {
+		"/orders/{orderNo}": {
 			"get": {
-				"operationId": "GetTrackingCheckpoints",
+				"operationId": "GetOrder",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -150,7 +117,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/TrackingCheckpoint"
+										"$ref": "#/components/schemas/Tracking"
 									},
 									"type": "array"
 								}
@@ -162,11 +129,41 @@
 				"parameters": [
 					{
 						"in": "path",
-						"name": "trackingNumber",
+						"name": "orderNo",
 						"required": true,
 						"schema": {
-							"format": "double",
-							"type": "number"
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/orders/{orderNo}/articles": {
+			"get": {
+				"operationId": "GetTracking",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Tracking"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "orderNo",
+						"required": true,
+						"schema": {
+							"type": "string"
 						}
 					}
 				]

@@ -30,19 +30,6 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "TrackingCheckpoint": {
-        "dataType": "refObject",
-        "properties": {
-            "tracking_number": {"dataType":"double","required":true},
-            "location": {"dataType":"string","required":true},
-            "timestamp": {"dataType":"string","required":true},
-            "status": {"dataType":"string","required":true},
-            "status_text": {"dataType":"string","required":true},
-            "status_detail": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
@@ -53,9 +40,9 @@ export function RegisterRoutes(app: express.Router) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-        app.get('/trackings',
+        app.get('/orders',
 
-            async function Presentation_getTrackings(request: any, response: any, next: any) {
+            async function Presentation_getOrders(request: any, response: any, next: any) {
             const args = {
                     email: {"in":"query","name":"email","required":true,"dataType":"string"},
             };
@@ -74,18 +61,18 @@ export function RegisterRoutes(app: express.Router) {
                 }
 
 
-              const promise = controller.getTrackings.apply(controller, validatedArgs as any);
+              const promise = controller.getOrders.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/trackings/:trackingNumber/checkpoints',
+        app.get('/orders/:orderNo',
 
-            async function Presentation_getTrackingCheckpoints(request: any, response: any, next: any) {
+            async function Presentation_getOrder(request: any, response: any, next: any) {
             const args = {
-                    trackingNumber: {"in":"path","name":"trackingNumber","required":true,"dataType":"double"},
+                    orderNo: {"in":"path","name":"orderNo","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -102,7 +89,35 @@ export function RegisterRoutes(app: express.Router) {
                 }
 
 
-              const promise = controller.getTrackingCheckpoints.apply(controller, validatedArgs as any);
+              const promise = controller.getOrder.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/orders/:orderNo/articles',
+
+            async function Presentation_getTracking(request: any, response: any, next: any) {
+            const args = {
+                    orderNo: {"in":"path","name":"orderNo","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const container: IocContainer = typeof iocContainer === 'function' ? (iocContainer as IocContainerFactory)(request) : iocContainer;
+
+                const controller: any = await container.get<Presentation>(Presentation);
+                if (typeof controller['setStatus'] === 'function') {
+                controller.setStatus(undefined);
+                }
+
+
+              const promise = controller.getTracking.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

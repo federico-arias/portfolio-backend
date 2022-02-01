@@ -1,18 +1,31 @@
-import { getOrder } from "./getOrder"
+const { getOrder } = require("./getOrder")
 
 describe("getOrder", () => {
 	it("should merge both tables", () => {
 		const input = [
-			{ id: "xyz", title: "A" },
-			{ id: "xyz", title: "AX" },
-			{ id: "abc", title: "B" },
+			{ tracking_number: "xyz", title: "A" },
+			{ tracking_number: "xyz", title: "AX" },
+			{ tracking_number: "abc", title: "B" },
 		]
 		const input2 = [
-			{ id: "xyz", unix_timestamp: 1 },
-			{ id: "xyz", unix_timestamp: 2 },
-			{ id: "xyz", unix_timestamp: 3 },
+			{ tracking_number: "xyz", timestamp: "2018-04-01T00:00:00.000Z" },
+			{ tracking_number: "abc", timestamp: "2018-04-01T00:00:00.000Z" },
+			{ tracking_number: "xyz", timestamp: "2039-04-01T00:00:00.000Z" },
+			{ tracking_number: "xyz", timestamp: "2039-04-02T00:00:00.000Z" },
 		]
 		const got = getOrder(input, input2)
-		expect(got).toBe(true)
+		const want = [
+			{
+				timestamp: new Date("2039-04-02T00:00:00.000Z"),
+				title: "A",
+				tracking_number: "xyz",
+			},
+			{
+				timestamp: new Date("2018-04-01T00:00:00.000Z"),
+				title: "B",
+				tracking_number: "abc",
+			},
+		]
+		expect(got).toStrictEqual(want)
 	})
 })
